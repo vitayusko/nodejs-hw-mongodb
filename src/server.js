@@ -41,7 +41,6 @@ export const setupServer = () => {
     }
   });
 
-  // Новый маршрут для получения контакта по ID
   app.get('/contacts/:contactId', async (req, res) => {
     const { contactId } = req.params;
     try {
@@ -74,7 +73,7 @@ export const setupServer = () => {
   app.use((err, req, res, next) => {
     res.status(500).json({
       message: 'Something went wrong',
-      error: error.message,
+      error: err.message,
     });
   });
 
