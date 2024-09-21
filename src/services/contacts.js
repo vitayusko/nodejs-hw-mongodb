@@ -1,13 +1,18 @@
 // src/services/students.js
 
-import { contsctsCollection } from '../db/models/contacts.js';
+import { contactsCollection } from '../db/models/contacts.js';
 
 export const getAllContacts = async () => {
-  const contacts = await contsctsCollection.find();
-  return contacts;
+  try {
+    const contacts = await contactsCollection.find();
+    return contacts;
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    throw error;
+  }
 };
 
 export const getContactById = async (contactId) => {
-  const contact = await contsctsCollection.findById(contactId);
+  const contact = await contactsCollection.findById(contactId);
   return contact;
 };
