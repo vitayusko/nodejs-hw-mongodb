@@ -5,6 +5,10 @@ import pinoHttp from 'pino-http';
 import { getAllContacts, getContactById } from './services/contacts.js';
 import { EVN_VARS } from './constants/index.js';
 import { env } from './utils/evn.js';
+import { Router } from 'express';
+import router from './routers/contacts.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 const logger = pino();
 const PORT = env(EVN_VARS.PORT, 3000);
@@ -23,6 +27,13 @@ export const setupServer = () => {
       message: 'Hello world!',
     });
   });
+
+  app.use(router);
+  // Обработка несуществующих маршрутов
+  app.use(notFoundHandler);
+
+  // Обработка ошибок
+  app.use(errorHandler);
 
   app.get('/contacts', async (req, res) => {
     try {

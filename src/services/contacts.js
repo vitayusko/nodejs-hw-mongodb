@@ -17,3 +17,7 @@ export const getContactById = async (contactId) => {
   const contact = await contactsCollection.findById(contactId);
   return contact;
 };
+
+export const createStudent = async (payload) => {
+  // Тіло функції
+};
