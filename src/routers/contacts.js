@@ -10,7 +10,11 @@
 import { Router } from 'express';
 import { getAllContacts, getContactById } from '../services/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { createNewContact } from '../controllers/contacts.js';
+import {
+  createNewContact,
+  deleteContactController,
+  patchContactsController,
+} from '../controllers/contacts.js';
 
 const router = Router();
 
@@ -39,5 +43,6 @@ router.get(
 );
 
 router.post('/contacts', ctrlWrapper(createNewContact));
-
+router.patch('/contacts/:contactId', ctrlWrapper(patchContactsController));
+router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 export default router;
