@@ -3,15 +3,30 @@
 import { contactsCollection } from '../db/models/contacts.js';
 
 // Получить все контакты
-export const getAllContacts = async () => {
-  try {
-    const contacts = await contactsCollection.find();
-    console.log('Contacts fetched from DB:', contacts);
-    return contacts;
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    throw error;
-  }
+export const getAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  const contactsQuery = ContactsCollection.find();
+  const contactsCount = await ContactsCollection.countDocuments();
+
+  const contacts = await contactsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+
+  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+
+  return {
+    data: contacts,
+    ...paginationData,
+  };
 };
 
 // Получить контакт
