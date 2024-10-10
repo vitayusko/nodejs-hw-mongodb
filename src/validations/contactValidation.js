@@ -1,3 +1,5 @@
+// src/validations/contactValidation.js
+
 import Joi from 'joi';
 
 const createContactsSchema = Joi.object({

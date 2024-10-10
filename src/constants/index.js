@@ -1,3 +1,5 @@
+// src/constants/index.js
+
 export const EVN_VARS = {
   PORT: 'PORT',
 };

@@ -1,7 +1,8 @@
+// src/db/contacts.js
+
 import mongoose from 'mongoose';
 import { MONGODB_DB_VARS } from '../constants/index.js';
 import { env } from '../utils/evn.js';
-
 
 export const initMongoDB = async () => {
   try {

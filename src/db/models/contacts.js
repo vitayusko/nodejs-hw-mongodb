@@ -1,3 +1,5 @@
+// src/db/models/contacts.js
+
 import { Schema, model } from 'mongoose';
 
 const contactsSchema = new Schema(
