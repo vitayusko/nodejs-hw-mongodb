@@ -1,7 +1,18 @@
 // src/services/contacts.js
 
 import { contactsCollection } from '../db/models/contacts.js';
+import { SORT_ORDER } from '../constants/index.js';
 
+// Функция для вычисления данных пагинации
+const calculatePaginationData = (totalItems, itemsPerPage, currentPage) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  return {
+    totalItems,
+    itemsPerPage,
+    currentPage,
+    totalPages,
+  };
+};
 // Получить все контакты
 export const getAllContacts = async ({
   page = 1,
@@ -12,8 +23,8 @@ export const getAllContacts = async ({
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find();
-  const contactsCount = await ContactsCollection.countDocuments();
+  const contactsQuery = contactsCollection.find();
+  const contactsCount = await contactsCollection.countDocuments();
 
   const contacts = await contactsQuery
     .skip(skip)

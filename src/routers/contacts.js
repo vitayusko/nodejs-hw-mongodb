@@ -25,22 +25,36 @@ import { validateBody } from '../middlewares/validateBody.js';
 
 const router = Router();
 
+// Получение всех контактов с возможной пагинацией и сортировкой
 router.get('/contacts', ctrlWrapper(getContactsController));
-router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
-router.post('/contacts', ctrlWrapper(createNewContact));
-router.patch('/contacts/:contactId', ctrlWrapper(patchContactsController));
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
+
+// Получение одного контакта по ID с валидацией ID
+router.get(
+  '/contacts/:contactId',
+  isValidId,
+  ctrlWrapper(getContactByIdController),
+);
+
+// Создание нового контакта с валидацией тела запроса
 router.post(
   '/contacts',
   validateBody(createContactsSchema),
   ctrlWrapper(createNewContact),
 );
 
+// Обновление контакта по ID с валидацией ID и тела запроса
 router.patch(
   '/contacts/:contactId',
+  isValidId,
   validateBody(updateContactsSchema),
   ctrlWrapper(patchContactsController),
 );
 
-router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
+// Удаление контакта по ID с валидацией ID
+router.delete(
+  '/contacts/:contactId',
+  isValidId,
+  ctrlWrapper(deleteContactController),
+);
+
 export default router;
