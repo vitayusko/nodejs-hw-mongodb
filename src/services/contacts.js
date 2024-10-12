@@ -6,11 +6,15 @@ import { SORT_ORDER } from '../constants/index.js';
 // Функция для вычисления данных пагинации
 const calculatePaginationData = (totalItems, itemsPerPage, currentPage) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = currentPage < totalPages;
   return {
     totalItems,
     itemsPerPage,
     currentPage,
     totalPages,
+    hasPreviousPage,
+    hasNextPage,
   };
 };
 // Получить все контакты
