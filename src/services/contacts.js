@@ -3,7 +3,6 @@
 import { contactsCollection } from '../db/models/contacts.js';
 import { SORT_ORDER } from '../constants/index.js';
 
-// Функция для вычисления данных пагинации
 const calculatePaginationData = (totalItems, itemsPerPage, currentPage) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const hasPreviousPage = currentPage > 1;
@@ -17,18 +16,19 @@ const calculatePaginationData = (totalItems, itemsPerPage, currentPage) => {
     hasNextPage,
   };
 };
-// Получить все контакты
+
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
+  userId,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = contactsCollection.find();
-  const contactsCount = await contactsCollection.countDocuments();
+  const contactsQuery = contactsCollection.find({ userId });
+  const contactsCount = await contactsCollection.countDocuments({ userId });
 
   const contacts = await contactsQuery
     .skip(skip)
@@ -44,22 +44,19 @@ export const getAllContacts = async ({
   };
 };
 
-// Получить контакт
-export const getContactById = async (contactId) => {
-  const contact = await contactsCollection.findById(contactId);
+export const getContactById = async (contactId, userId) => {
+  const contact = await contactsCollection.findOne({ _id: contactId, userId });
   return contact;
 };
 
-// Создать новый контакт
 export const createContact = async (payload) => {
   const contact = await contactsCollection.create(payload);
   return contact;
 };
 
-// Обновить данные контакта
-export const updateContact = async (id, updatedFields) => {
-  const contact = await contactsCollection.findByIdAndUpdate(
-    id,
+export const updateContact = async (contactId, userId, updatedFields) => {
+  const contact = await contactsCollection.findOneAndUpdate(
+    { _id: contactId, userId },
     { $set: updatedFields },
     { new: true },
   );
@@ -67,10 +64,10 @@ export const updateContact = async (id, updatedFields) => {
   return contact;
 };
 
-// Удалить контакт
-export const deleteContact = async (contactId) => {
+export const deleteContact = async (contactId, userId) => {
   const contact = await contactsCollection.findOneAndDelete({
     _id: contactId,
+    userId,
   });
 
   return contact;
