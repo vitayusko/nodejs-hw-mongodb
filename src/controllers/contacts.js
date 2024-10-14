@@ -11,8 +11,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
-// controlers
-
+// Контроллер получения всех контактов
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -22,7 +21,9 @@ export const getContactsController = async (req, res, next) => {
       perPage,
       sortBy,
       sortOrder,
+      userId: req.user._id,
     });
+
     res.status(200).json({
       status: 200,
       message: 'Successfully retrieved all contacts!',
@@ -33,10 +34,11 @@ export const getContactsController = async (req, res, next) => {
   }
 };
 
+// Контроллер получения контакта по ID
 export const getContactByIdController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(contactId, req.user._id);
 
     if (!contact) {
       throw createHttpError(404, 'Contact not found');
@@ -52,6 +54,7 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
+// Контроллер создания нового контакта
 export const createNewContact = async (req, res, next) => {
   try {
     const { name, phoneNumber, email, isFavourite, contactType } = req.body;
@@ -63,12 +66,14 @@ export const createNewContact = async (req, res, next) => {
       );
     }
 
+    // Добавляем userId из req.user._id
     const newContact = await createContact({
       name,
       phoneNumber,
       email,
       isFavourite,
       contactType,
+      userId: req.user._id,
     });
 
     return res.status(201).json({
@@ -81,6 +86,7 @@ export const createNewContact = async (req, res, next) => {
   }
 };
 
+// Контроллер обновления контакта
 export const patchContactsController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
@@ -93,7 +99,7 @@ export const patchContactsController = async (req, res, next) => {
     if (isFavourite !== undefined) updatedFields.isFavourite = isFavourite;
     if (contactType !== undefined) updatedFields.contactType = contactType;
 
-    const result = await updateContact(contactId, updatedFields);
+    const result = await updateContact(contactId, req.user._id, updatedFields);
 
     if (!result) {
       throw createHttpError(404, 'Contact not found');
@@ -109,11 +115,12 @@ export const patchContactsController = async (req, res, next) => {
   }
 };
 
+// Контроллер удаления контакта
 export const deleteContactController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
-    const contact = await deleteContact(contactId);
+    const contact = await deleteContact(contactId, req.user._id);
 
     if (!contact) {
       throw createHttpError(404, 'Contact not found');
@@ -123,4 +130,24 @@ export const deleteContactController = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+// Другой вариант создания контакта (если нужно)
+export const createContactController = async (req, res) => {
+  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+
+  const newContact = await createContact({
+    name,
+    phoneNumber,
+    email,
+    isFavourite,
+    contactType,
+    userId: req.user._id,
+  });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: newContact,
+  });
 };
