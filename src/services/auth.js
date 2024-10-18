@@ -4,6 +4,10 @@ import { UsersCollection } from '../db/models/user.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { randomBytes } from 'crypto';
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/index.js';
+import jwt from 'jsonwebtoken';
+import { sendEmail } from '../utils/sendMail.js';
+import { SMTP } from '../constants/index.js';
+import { env } from '../utils/evn.js';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -92,4 +96,36 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
+};
+
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  // Генерация JWT токена
+  const token = jwt.sign({ email }, env('JWT_SECRET'), { expiresIn: '5m' });
+
+  // ссылка для сброса пароля
+  const resetLink = `${env('APP_DOMAIN')}/reset-password?token=${token}`;
+
+  // отправляем email пользователю
+  const emailOptions = {
+    from: env(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Password reset',
+    html: `<p>Click the link to reset your password: <a href="${resetLink}">Reset Password</a></p>`,
+  };
+
+  try {
+    await sendEmail(emailOptions);
+  } catch (error) {
+    console.error('Error sending email:', error);
+
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
 };
