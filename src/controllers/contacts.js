@@ -91,7 +91,17 @@ export const patchContactsController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+    const photo = req.file;
 
+    let photoUrl;
+
+    if (photo) {
+      if (env('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
     const updatedFields = {};
     if (name !== undefined) updatedFields.name = name;
     if (phoneNumber !== undefined) updatedFields.phoneNumber = phoneNumber;
