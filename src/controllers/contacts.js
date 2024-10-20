@@ -66,7 +66,6 @@ export const createNewContact = async (req, res, next) => {
       );
     }
 
-    // Добавляем userId из req.user._id
     const newContact = await createContact({
       name,
       phoneNumber,
@@ -142,22 +141,21 @@ export const deleteContactController = async (req, res, next) => {
   }
 };
 
-// Другой вариант создания контакта (если нужно)
-export const createContactController = async (req, res) => {
-  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+// export const createContactController = async (req, res) => {
+//   const { name, phoneNumber, email, isFavourite, contactType } = req.body;
 
-  const newContact = await createContact({
-    name,
-    phoneNumber,
-    email,
-    isFavourite,
-    contactType,
-    userId: req.user._id,
-  });
+//   const newContact = await createContact({
+//     name,
+//     phoneNumber,
+//     email,
+//     isFavourite,
+//     contactType,
+//     userId: req.user._id,
+//   });
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: newContact,
-  });
-};
+//   res.status(201).json({
+//     status: 201,
+//     message: 'Successfully created a contact!',
+//     data: newContact,
+//   });
+// };
