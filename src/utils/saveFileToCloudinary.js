@@ -1,18 +1,24 @@
 // src/utils/saveFileToCloudinary.js
 
 import cloudinary from 'cloudinary';
-import { env } from './env.js';
+import { env } from './evn.js';
 import { CLOUDINARY } from '../constants/index.js';
+import fs from 'fs/promises';
 
 cloudinary.v2.config({
   secure: true,
-  cloud_name: env(CLOUDINARY.CLOUD_NAME),
-  api_key: env(CLOUDINARY.API_KEY),
-  api_secret: env(CLOUDINARY.API_SECRET),
+  cloud_name: env(CLOUDINARY.cloudName),
+  api_key: env(CLOUDINARY.apiKey),
+  api_secret: env(CLOUDINARY.apiSecret),
 });
 
 export const saveFileToCloudinary = async (file) => {
-  const response = await cloudinary.v2.uploader.upload(file.path);
-  await fs.unlink(file.path); // Удаляем локальный файл после загрузки в облако
-  return response.secure_url;
+  try {
+    const response = await cloudinary.v2.uploader.upload(file.path);
+    await fs.unlink(file.path);
+    return response.secure_url;
+  } catch (error) {
+    console.error('Ошибка загрузки на Cloudinary:', error);
+    throw error;
+  }
 };
