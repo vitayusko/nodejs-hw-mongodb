@@ -34,3 +34,9 @@ export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
 //   ADMIN: 'admin',
 //   USER: 'user',
 // };
+
+export const CLOUDINARY = {
+  cloudName: 'CLOUDINARY_CLOUD_NAME',
+  apiKey: 'CLOUDINARY_API_KEY',
+  apiSecret: 'CLOUDINARY_API_SECRET',
+};
