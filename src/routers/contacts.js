@@ -15,8 +15,6 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-// import { checkRoles } from '../middlewares/checkRoles.js';
-// import { ROLES } from '../constants/index.js'; // Импортируйте роли, если они есть
 import { upload } from '../middlewares/multer.js';
 
 const router = Router();
@@ -29,18 +27,16 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
 router.post(
   '/',
-  // checkRoles(ROLES.USER),
-  // isValidId,
-  upload.single('photo'), // добавляем для загрузки файлов
+
+  upload.single('photo'),
   validateBody(createContactsSchema),
   ctrlWrapper(createNewContact),
 );
 
 router.patch(
   '/:contactId',
-  // checkRoles(ROLES.USER),
   isValidId,
-  upload.single('photo'), // добавляем для загрузки файлов
+  upload.single('photo'),
   validateBody(updateContactsSchema),
   ctrlWrapper(patchContactsController),
 );

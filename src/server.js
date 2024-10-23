@@ -5,11 +5,12 @@ import cors from 'cors';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { env } from './utils/evn.js';
-import { EVN_VARS } from './constants/index.js';
+import { EVN_VARS, UPLOAD_DIR } from './constants/index.js';
 import router from './routers/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const logger = pino();
 const PORT = env(EVN_VARS.PORT, 3000);
@@ -32,7 +33,19 @@ export const startServer = () => {
   });
 
   app.use(router);
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  // app.use('/api-docs', swaggerDocs());
+  const { serve, setup } = swaggerDocs(); // Деструктуризация serve и setup
 
+  app.use(
+    '/api-docs',
+    (req, res, next) => {
+      console.log('Request to /api-docs received');
+      next();
+    },
+    serve,
+    setup,
+  );
   app.use(notFoundHandler);
 
   app.use(errorHandler);

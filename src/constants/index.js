@@ -30,13 +30,11 @@ export const SMTP = {
 
 export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
 export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
-// export const ROLES = {
-//   ADMIN: 'admin',
-//   USER: 'user',
-// };
 
 export const CLOUDINARY = {
   cloudName: 'CLOUDINARY_CLOUD_NAME',
   apiKey: 'CLOUDINARY_API_KEY',
   apiSecret: 'CLOUDINARY_API_SECRET',
 };
+
+export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
