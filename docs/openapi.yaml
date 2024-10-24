@@ -13,7 +13,7 @@ tags:
 servers:
   - url: http://localhost:3000
     description: Local server
-  - url: https://your-deployed-app.com
+  - url: https://nodejs-hw-mongodb-7-r46q.onrender.com
     description: Deployed server
 paths:
   /contacts:
