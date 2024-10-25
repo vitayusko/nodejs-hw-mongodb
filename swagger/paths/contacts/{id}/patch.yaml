@@ -19,13 +19,13 @@ requestBody:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - _id
-          - name
-          - phoneNumber
-          - email
-          - contactType
-          - userId
+        # required:
+        #   - _id
+        #   - name
+        #   - phoneNumber
+        #   - email
+        #   - contactType
+        #   - userId
         properties:
           name:
             description: "Contact's name"
